@@ -9,6 +9,14 @@ use App\Http\Requests\SubscribeRequest;
 
 class SignUpController extends Controller
 {
+
+  public function subscribers()
+  {
+    $subscribers = Subscriber::all();
+    return view('subscribers',['subscribers' => $subscribers]);
+  }
+
+
   public function signup()
   {
     return view('signup');
@@ -36,4 +44,34 @@ class SignUpController extends Controller
 
     return back()->with(['success' => 'You have successfully subscribed to our email platform']);
   }
+
+  public function export()
+  {
+    $csvData = [];
+    $subscribers = Subscriber::all();
+    foreach($subscribers as $subscriber){
+      $csvData[] = [
+        'firstname' => $subscriber->firstname,
+        'lastname' => $subscriber->lastname,
+        'email' => $subscriber->email,
+        'purchased_on' => $subscriber->created_at
+      ];
+    }
+
+    $fp = fopen("php://output", "w");
+
+    $header = array("FirstName", "LastName","Email","Purchased_on");
+
+    $filename = "subscribers.csv";
+
+    fputcsv($fp, $header);
+    foreach($csvData as $row){
+      fputcsv($fp, $row);
+    }
+    
+    header( 'Content-Type: text/csv' );
+    header( 'Content-Disposition: attachment;filename=' . $filename);
+    fclose($fp);
+  }
+
 }

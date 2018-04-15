@@ -19,3 +19,7 @@ Route::get('/signup', 'SignUpController@signup');
 Route::post('/subscribe', 'SignUpController@subscribe');
 Route::get('/compose', 'EmailController@compose');
 Route::post('/send', 'EmailController@send');
+
+
+Route::get('/subscribers', 'SignUpController@subscribers');
+Route::get('/export', 'SignUpController@export');
