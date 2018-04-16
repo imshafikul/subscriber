@@ -23,3 +23,6 @@ Route::post('/send', 'EmailController@send');
 
 Route::get('/subscribers', 'SignUpController@subscribers');
 Route::get('/export', 'SignUpController@export');
+
+
+Route::get('/import','SignUpController@import');

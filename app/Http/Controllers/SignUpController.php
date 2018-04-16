@@ -74,4 +74,28 @@ class SignUpController extends Controller
     fclose($fp);
   }
 
+  public function import()
+  {
+    if (($handle = fopen ( public_path () . '/mock_subscriber.csv', 'r' )) !== FALSE) {
+      while ( ($data = fgetcsv ( $handle, 1000, ',' )) !== FALSE ) {
+        $subscriber = new Subscriber ();
+        $subscriber->firstname = $data [1];
+        $subscriber->lastname = $data [2];
+        $subscriber->email = $data [3];
+        $subscriber->save ();
+  
+      }
+      fclose ( $handle );
+      
+    }
+
+    return Subscriber::all();
+
+
+  }
+
+
+
+
+
 }
