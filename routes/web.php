@@ -26,3 +26,4 @@ Route::get('/export', 'SignUpController@export');
 
 
 Route::get('/import','SignUpController@import');
+Route::post('/import/store','SignUpController@storeCsv')->name('import.store');

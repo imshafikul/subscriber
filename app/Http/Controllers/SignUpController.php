@@ -6,6 +6,9 @@ use App\Subscriber;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Requests\SubscribeRequest;
+use Illuminate\Support\Facades\Storage;
+use App\Jobs\ImportCsvFile;
+
 
 class SignUpController extends Controller
 {
@@ -58,6 +61,7 @@ class SignUpController extends Controller
       ];
     }
 
+    ob_start();
     $fp = fopen("php://output", "w");
 
     $header = array("FirstName", "LastName","Email","Purchased_on");
@@ -72,28 +76,21 @@ class SignUpController extends Controller
     header( 'Content-Type: text/csv' );
     header( 'Content-Disposition: attachment;filename=' . $filename);
     fclose($fp);
+    ob_flush();
   }
 
   public function import()
   {
-    if (($handle = fopen ( public_path () . '/mock_subscriber.csv', 'r' )) !== FALSE) {
-      while ( ($data = fgetcsv ( $handle, 1000, ',' )) !== FALSE ) {
-        $subscriber = new Subscriber ();
-        $subscriber->firstname = $data [1];
-        $subscriber->lastname = $data [2];
-        $subscriber->email = $data [3];
-        $subscriber->save ();
-  
-      }
-      fclose ( $handle );
-      
-    }
-
-    return Subscriber::all();
-
-
+    return view('upload');
   }
 
+
+  public function storeCsv(Request $request)
+  {
+    $csvFilePath = public_path () . '/mock_subscriber.csv';
+    ImportCsvFile::dispatch($csvFilePath);
+
+  }
 
 
 
